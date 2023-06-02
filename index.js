@@ -30,7 +30,6 @@ const userSchema = new mongoose.Schema({
   password: String,
 });
 
-
 // Create a Flight model based on the schema
 const Flight = mongoose.model("Flight", flightSchema, "flightData");
 
