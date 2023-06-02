@@ -42,12 +42,13 @@ app.get("/flights", async (req, res) => {
 
     // Display flight prices
     const flightPrices = flights.map((flight) => {
-      console.log(flight);
       return {
         source: flight.source,
         destination: flight.destination,
         fare: flight.fare,
         flightName: flight.flightName,
+        departureDate: flight.departureDate,
+        duration: flight.duration,
       };
     });
 
@@ -62,13 +63,10 @@ app.get("/flights", async (req, res) => {
 const PORT = process.env.port || 4000;
 app.listen(PORT, () => {
   mongoose
-    .connect(
-      process.env.MONGODB_URL,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      }
-    )
+    .connect(process.env.MONGODB_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    })
     .then(() => {
       console.log("Connected to MongoDB Atlas");
       console.log(`Server listening on port ${PORT}`);
