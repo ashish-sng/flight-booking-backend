@@ -41,10 +41,12 @@ app.get("/flights", async (req, res) => {
   try {
     const { source, destination } = req.query;
 
+    console.log("Searching flights:", source, destination);
+
     // Perform the search based on source and destination
     const flights = await Flight.find({
-      source: { $regex: new RegExp(source, "i") },
-      destination: { $regex: new RegExp(destination, "i") },
+      source: { $regex: new RegExp(source.trim(), "i") },
+      destination: { $regex: new RegExp(destination.trim(), "i") },
     });
 
     if (flights.length === 0) {
@@ -63,7 +65,43 @@ app.get("/flights", async (req, res) => {
       };
     });
 
-    res.json(flightPrices);
+    res.json(flights);
+  } catch (error) {
+    console.error("Error searching flights:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
+// API endpoint for connecting-flight search
+app.get("/connecting-flights", async (req, res) => {
+  try {
+    const { source, destination } = req.query;
+
+    // Perform the search based on source and destination
+    const flightsFromSource = await Flight.find({
+      source: { $regex: new RegExp(source.trim(), "i") },
+    });
+    const flightsToDestination = await Flight.find({
+      destination: { $regex: new RegExp(destination.trim(), "i") },
+    });
+
+    const flights = [];
+    for (const departingFlight of flightsFromSource) {
+      for (const arrivingFlight of flightsToDestination) {
+        if (departingFlight.destination === arrivingFlight.source) {
+          flights.push({
+            flight1: departingFlight,
+            flight2: arrivingFlight,
+          });
+        }
+      }
+    }
+
+    if (flights.length === 0) {
+      return res.status(404).json({ message: "No flights found." });
+    }
+
+    res.json(flights);
   } catch (error) {
     console.error("Error searching flights:", error);
     res.status(500).json({ message: "Internal server error." });
