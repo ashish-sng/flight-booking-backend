@@ -36,25 +36,49 @@ const Flight = mongoose.model("Flight", flightSchema, "flightData");
 // Create a User model based on the schema
 const User = mongoose.model("User", userSchema, "users");
 
-// API endpoint for flight search
-app.get("/flights", async (req, res) => {
+// verify logged in or not!
+const verifyToken = (req, res, next) => {
   try {
-    const { source, destination } = req.query;
+    if (!req.headers.authorization) {
+      throw new Error("Unauthorized request");
+    }
+    const bearerHeader = req.headers["authorization"];
+    if (typeof bearerHeader == "undefined") {
+      throw new Error("Unauthorized request");
+    }
+    const bearer = bearerHeader.split(" ");
+    const token = bearer[1];
+    req.token = token;
+    const jwtVerification = jwt.verify(req.token, process.env.JWT_SECRET);
+    if (!jwtVerification) {
+      throw new Error("Invalid token");
+    }
 
-    console.log("Searching flights:", source, destination);
+    next();
+  }catch (error) {
+    res.sendStatus(403);
+  }
+};
 
-    // Perform the search based on source and destination
+app.get("/flights", verifyToken, async (req, res) => {
+  try {
+    const { source, destination, departureDate } = req.query;
+
+    console.log("Searching flights:", source, destination, departureDate);
+
+    // Perform the search based on source and destination and departure date
     const flights = await Flight.find({
       source: { $regex: new RegExp(source.trim(), "i") },
       destination: { $regex: new RegExp(destination.trim(), "i") },
+      departureDate: departureDate,
     });
 
     if (flights.length === 0) {
       return res.status(404).json({ message: "No flights found." });
     }
 
-    // Display flight prices
-    const flightPrices = flights.map((flight) => {
+    // Display flight details
+    const flightDetails = flights.map((flight) => {
       return {
         source: flight.source,
         destination: flight.destination,
@@ -65,7 +89,7 @@ app.get("/flights", async (req, res) => {
       };
     });
 
-    res.json(flights);
+    res.json(flightDetails);
   } catch (error) {
     console.error("Error searching flights:", error);
     res.status(500).json({ message: "Internal server error." });
