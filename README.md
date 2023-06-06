@@ -1,5 +1,18 @@
 # Flight Search App - Backend
 
+
+<h1> A few example picutres are attached below as the data is genereated because no free apis were available that were free and provide data on fares so it might be difficult to find flights at times in this generated data.<h1>
+
+![screencapture-ashishsng-flight-fare-app-netlify-app-flights-2023-06-06-22_19_04](https://github.com/ashish-sng/flight-booking-fare/assets/68745052/97273fe0-0441-4534-a7d6-312947a9d132)
+
+![screencapture-localhost-3000-flights-2023-06-06-22_02_50](https://github.com/ashish-sng/flight-booking-fare/assets/68745052/47e5d8d1-f871-44b5-ac5a-00027c42c30c)
+
+![screencapture-localhost-3000-flights-2023-06-06-22_03_57](https://github.com/ashish-sng/flight-booking-fare/assets/68745052/a5199d3d-bc44-4183-ad92-be64024dab18)
+
+
+![screencapture-localhost-3000-flights-2023-06-06-22_04_49](https://github.com/ashish-sng/flight-booking-fare/assets/68745052/e79a54c7-6555-4eef-aaad-5805ee054561)
+
+
 The backend of the Flight Search App is responsible for handling the server-side logic and database operations. It provides the necessary APIs for user authentication, flight search, and data retrieval from the MongoDB Atlas database.
 
 ## Features
