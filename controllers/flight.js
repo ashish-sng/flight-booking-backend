@@ -11,23 +11,7 @@ const getFlights = async (req, res) => {
       departureDate: departureDate,
     });
 
-    if (flights.length === 0) {
-      return res.status(404).json({ message: "No flights found." });
-    }
-
-    // Display flight details
-    const flightDetails = flights.map((flight) => {
-      return {
-        source: flight.source,
-        destination: flight.destination,
-        fare: flight.fare,
-        flightName: flight.flightName,
-        departureDate: flight.departureDate,
-        duration: flight.duration,
-      };
-    });
-
-    res.json(flightDetails);
+    res.json(flights);
   } catch (error) {
     console.error("Error searching flights:", error);
     res.status(500).json({ message: "Internal server error." });
